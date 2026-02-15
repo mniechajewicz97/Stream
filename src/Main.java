@@ -1,7 +1,13 @@
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.math.BigInteger;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Main {
     public static void main(String[] args) {
@@ -153,7 +159,186 @@ public class Main {
 
         numbers.stream().forEach(System.out::println);
         numbers.stream().forEach(n-> System.out.println(n));
+        //1. Wyświetl tylko liczby, które są nieparzyste
+        System.out.println();
+        System.out.println("1: Liczby nieparzyste:");
 
+        List<Integer> nieparzyste = numbers.stream()
+                .filter(n -> n % 2 != 0)
+                .toList();
+        System.out.println(nieparzyste);
+
+        //   2. Podnieś wszystkie liczby do kwadratu i wyświetl tylko te, które są mniejsze niż 50
+        System.out.println();
+        System.out.println("2: Liczby do kwadratu wieksze od 50:");
+        List<Integer> doKwadratu = numbers.stream()
+                .map(n-> n * n)
+                .filter(n-> n >50)
+                .toList();
+        System.out.println(doKwadratu);
+
+        //   3. Przelicz na double i wyświetl bez powtórzeń połówki każdej liczby
+        System.out.println();
+        System.out.println("2: Przeliczenie na double, bez dubli polowki kazdej liczby");
+        List<Double> polowki = numbers.stream()
+                .map(n-> n - (0.5 * n))
+                .distinct()
+                .toList();
+        System.out.println(polowki);
+
+        //   4. Zapisz liczbę unikalnych elementów do zmiennej a następnie ją wyświetl
+        System.out.println();
+        System.out.println("4: unikalne elementy");
+        List<Integer> unikaty = numbers.stream()
+                .distinct()
+                .toList();
+        System.out.println(unikaty);
+
+        //   5. Wyświetl elementy rosnąco
+        System.out.println();
+        System.out.println("5: Elementy rosnaco");
+        List<Integer> rosnaco = numbers.stream()
+                .toList();
+        System.out.println(rosnaco);
+
+        //   6. Stwórz listę posortowanych malejąco elementów, ale bez powtórzeń
+        System.out.println();
+        System.out.println("7: Elementy malejace, bez duplikatow");
+        List<Integer> malejace = numbers.stream()
+                .sorted(Comparator.reverseOrder())
+                .distinct()
+                .toList();
+        System.out.println(malejace);
+
+        //   7. Stwórz set BigIntegerów posortowanych malejąco
+        System.out.println();
+        System.out.println("8: Set BigInteger posortowany malejąco");
+        Set<BigInteger> duzeLiczby = new TreeSet<>(Comparator.reverseOrder());
+        duzeLiczby.add(new BigInteger("10"));
+        duzeLiczby.add(new BigInteger("20"));
+        duzeLiczby.add(new BigInteger("30"));
+        duzeLiczby.add(new BigInteger("40"));
+        duzeLiczby.add(new BigInteger("30"));
+        duzeLiczby.forEach(System.out::println);
+
+        //   8. Policz sumę elementów pomnożonych przez 2
+        System.out.println();
+        System.out.println("8: Suma elementów pomnożonych przez 2");
+        int suma = numbers.stream()
+                .mapToInt(n-> n * 2)
+                .sum();
+        System.out.println(suma);
+
+        //   9. Oblicz średnią elementów na liście
+        System.out.println();
+        System.out.println("9: Średnia elementów na liście");
+        double iloscElementow = numbers.stream()
+                .mapToInt(n-> n)
+                .average()
+                .orElse(0); // tak sie daje jakby lista byla pusta i zeby zamknac streama
+
+        BigDecimal zaokraglona = BigDecimal.valueOf(iloscElementow);
+        System.out.println(zaokraglona.setScale(2, RoundingMode.HALF_UP));
+
+        //   10. Policz ile jest liczb parzystych
+        System.out.println();
+        System.out.println("10: Ilość liczb parzystych");
+        List<Integer> parzyste = numbers.stream()
+                .filter(n-> n % 2 == 0)
+                .toList();
+        System.out.println(parzyste);
+
+        //   11. Policz ile jest różnych liczb parzystych
+        System.out.println();
+        System.out.println("11: Ilość różnych liczby parzystych");
+        long rozneParzyste = numbers.stream()
+                .filter(n-> n % 2 == 0)
+                .count();
+        System.out.println(rozneParzyste);
+
+        //   12. Napisz klasę Osoba, która będzie zawierała pola imie, nazwisko, rokUrodzenia, ulubionySport
+        System.out.println();
+        System.out.println("12: Klasa Osoba");
+
+        Person derek = new Person("Derek", "Kutafon", 1978, "Piłka nożna");
+        Person stefan = new Person("Stefan", "Jarzębina", 1988, "Koszykówka");
+        Person zyta = new Person("Zyta", "Placek", 1978, "Siatkówka");
+        Person klaus = new Person("Klaus", "Germański", 1999,"Piłka nożna");
+        Person błażej = new Person("Błażej", "Juras", 1998, "Siatkówka");
+        List<Person> persons = new ArrayList<>();
+        persons.add(derek);
+        persons.add(stefan);
+        persons.add(zyta);
+        persons.add(klaus);
+        persons.add(błażej);
+
+        //   13. Napisz strumień, który dla podanej listy osób policzy, ile jest takich, które urodziły się po roku 1998
+        System.out.println();
+        System.out.println("13: Osoby urodzone po 1998");
+        long rokUrodzenia = persons.stream()
+                .filter(n-> n.getYearOfBirth() > 1998)
+                .count();
+        System.out.println(rokUrodzenia);
+
+        //   14. Napisz strumień, który dla podanej listy osób zwróci te, które urodziły się przed rokiem 1990
+        System.out.println();
+        System.out.println("14: Osoby urodzone przed rokiem 1990");
+        List<Person> urodzonePo90 = persons.stream()
+                .filter(n-> n.getYearOfBirth() > 1990)
+                .collect(Collectors.toList());
+        System.out.println(urodzonePo90);
+
+        //   15. Napisz strumień, który dla podanej listy osób zwróci te, które urodziły się przed rokiem 1990 posortowane po nazwisku
+        System.out.println();
+        System.out.println("15: Osoby urodzone przed rokiem 1990 posortowane po nazwisku");
+        List<Person> poNazwisku = persons.stream()
+                .filter(n-> n.getYearOfBirth() < 1990)
+                .sorted(Comparator.comparing(Person::getSurname))
+                .collect(Collectors.toList());
+        poNazwisku.forEach(n-> System.out.println(n.getSurname() + " " + stefan.getName()));
+
+        //   16. Napisz strumień, który dla podanej listy osób zwróci te, które lubią grać w piłkę nożną
+        System.out.println();
+        System.out.println("16: osoby, które lubią grać w piłkę nożną");
+        List<Person> pilka = persons.stream()
+                .filter(n-> n.getFavouriteSport().equals("Piłka nożna"))
+                .collect(Collectors.toList());
+        System.out.println(pilka);
+
+        //   17. Napisz strumień, który dla podanej listy osób zwróci te, które urodziły się przed rokiem 1998 i lubią koszykówkę
+        System.out.println();
+        System.out.println("17: Osoby urodzone przed 1998 i lubiące koszykówkę");
+        List<Person> osoby = persons.stream()
+                .filter(n-> n.getYearOfBirth() < 1998 && n.getFavouriteSport().equals("Koszykówka"))
+                .collect(Collectors.toList());
+        System.out.println(osoby);
+
+        //   18. Napisz strumień, który dla podanej listy osób zwróci te, które urodziły się przed rokiem 1998 i lubią koszykówkę
+        //  (osoby posortowane po nazwisku, jeśli nazwisko takie samo to po imieniu)
+        System.out.println();
+        System.out.println("18: Osoby urodzone przed 1998 lubiace koszykowke, posortowane po nazwisku ");
+        List<Person> osoby2 = persons.stream()
+                .filter(n-> n.getYearOfBirth() < 1998 && n.getFavouriteSport().equals("Koszykówka"))
+                .collect(Collectors.toList());
+
+        osoby2.forEach(n-> System.out.println(n.getSurname() + " " + n.getName()));
+
+        //   19. Napisz metodę, która dla podanej listy osób zwróci te, które urodziły się przed podanym jako argument rokiem i lubią
+        //  podany jako argument sport
+        System.out.println();
+        System.out.println("19: Metoda"); // musze nad tym wiecej pomyslec
+
+
+
+            //   20. Napisz strumień, który dla podanej listy osób zwróci tę, która jest najstarsza
+        int maxAge = persons.stream()
+                .mapToInt(Person::getAge)
+                .max()
+                .orElseThrow(); // to sie pisze w razie pustej listy
+        List<Person> old = persons.stream()
+                .filter(n-> n.getAge() == maxAge) // jezeli maja taki sam wiek
+                .collect(Collectors.toList());
+        System.out.println(old);
 
 
 
