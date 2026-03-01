@@ -815,10 +815,12 @@ public class Main {
         BigDecimal zaokraglonaZnizka = new BigDecimal(sredniaZnizka);
         System.out.println("Średnia zniżka to:  " + zaokraglonaZnizka.setScale(2, BigDecimal.ROUND_HALF_UP));
 
-        Double najwiekszaZnizka = products.stream()
-                .filter(p -> p.getDiscount().isPresent())
-                .mapToDouble(p -> p.getDiscount().get()).max().orElse(0.0);
-        System.out.println("Największa zniżka to: " + najwiekszaZnizka);
+        String najwiekszaZnizka =  products.stream()
+                .max(Comparator.comparing(p -> p.getDiscount().orElse(0.0)))
+                .map(Product::getName)
+                .orElse("Brak produktów");
+        System.out.println("Produkt z największą zniżką: " + najwiekszaZnizka);
+
 
         List<String> listaStringow = products.stream()
                 .map(p -> p.getName() + ": " +
