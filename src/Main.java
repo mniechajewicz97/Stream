@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.text.html.Option;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -493,21 +494,417 @@ public class Main {
                 "Metoda: Map<String, List<Person>> pracownicyZHobbyWFirmach(List<Firma> firmy, String szukaneHobby)");
 
         System.out.println(pracownicyZHobbyWFirmach(firmy, "Granie na playstation"));
+
+        System.out.println();
+        System.out.println("1: Od czata; metoda; Map<String, Long> liczbaPracownikowNaSport(List<Firma> firmy)");
+        System.out.println(liczbaPracownikowNaSport(firmy));
+
+        System.out.println();
+        System.out.println("2: Od czata; List<String> wszystkieHobbyOsobPo2000(List<Firma> firmy)");
+        System.out.println(wszystkieHobbyOsobPo2000(firmy));
+
+        System.out.println();
+        System.out.println("3: Od czata; Map<String, Person> najmlodszyPracownikWSporcie(List<Firma> firmy)");
+
+        System.out.println(najmlodszyPracownikWSporcie(firmy));
+
+        System.out.println();
+        System.out.println("4: Od czata; Map<String, List<String>> nazwiskaPracownikowWFirmachZSportem(List<Firma> firmy, String sport)");
+
+        System.out.println(nazwiskaPracownikowWFirmachZSportem(firmy, "Koszykówka"));
+        System.out.println(nazwiskaPracownikowWFirmachZSportem(firmy, "Piłka nożna"));
+        System.out.println(nazwiskaPracownikowWFirmachZSportem(firmy, "Siatkówka"));
+
+        System.out.println();
+        System.out.println("---------------------------------------------------");
+
+        Optional<Person> najmlodszy = firmy.stream()
+                .flatMap(f -> f.getPracownicy().stream())
+                .filter(p -> p.getFavouriteSport().equals("dupa"))
+                .min(Comparator.comparing(Person::getAge));
+
+//        System.out.println(najmlodszy.get());  TAK NIE ROBIMY
+
+        List<String> imionaBezDuplikatow = firmy.stream()
+                .flatMap(f -> f.getPracownicy().stream())
+                .map(p -> p.getName())
+                .distinct()
+                .toList();
+        System.out.println(imionaBezDuplikatow);
+        System.out.println();
+
+        List<String> tylkoMlodziPracownicy = firmy.stream()
+                .flatMap(f -> f.getPracownicy().stream())
+                .filter(p -> p.getAge() <= 30)
+                .map(Person::getSurname)
+                .toList();
+        System.out.println(tylkoMlodziPracownicy);
+
+        List<String> unikalneHobbyPracownikow = firmy.stream()
+                .flatMap(f -> f.getPracownicy().stream())
+                .flatMap(p -> p.getHobbies().stream())
+                .distinct()
+                .sorted()
+                .toList();
+        System.out.println(unikalneHobbyPracownikow);
+
+
+        //OPTIONAL
+        //To takie pidelko na potencjalnie pusta wartosc
+
+        //String findUserName(int id){
+        // ...o
+        //  return null // bo nie znalazlo takiego
+
+        //String name = findUserName(4); // ja tutaj mysle ze mi zwrocilo "Adrian" a tak naprawde jest null bo nic nie znalazlo w bazie danych!
+        //name.toUpperCase(); tutaj bedzie wyjatek!!!! Bo probuje zrobic null.toUpperCase() a tak sie nie da!!!!
+        //zeby sobie z tym poradzic to musialby zroibc najpierw
+        //if(name != null) {
+        // i tu dopiero name.toUpperCase();
+        //}
+        //wtedy by nie bylo wyajtku :)
+
+        /// /
+// Optional z wartoscia
+        Optional<String> opt1 = Optional.of("Java");
+        System.out.println(opt1);
+
+        //Optional pusty
+        Optional<String> opt2 = Optional.empty();
+        System.out.println(opt2);
+
+        //wartosc moze byc nullowa
+        Optional.ofNullable(null);
+        Optional.ofNullable("adix");
+
+        //sprawdzanie czy optional ma wartosc
+
+        Optional<String> resultOfFindUserNameMethod = findUserNameById(1);
+
+        if (resultOfFindUserNameMethod.isPresent()) {
+            System.out.println("Znaleziono user name");
+        }
+
+        if (resultOfFindUserNameMethod.isEmpty()) {
+            System.out.println("Nie ma  user name");
+        }
+
+        //orElse() | orElseGet() | orElseThrow()
+
+        Optional<String> opt3 = Optional.of("Java");
+        Optional<String> opt4 = Optional.empty();
+
+        //orElse() zawsze wywoluje metode
+
+        //wykonuje sie zawsze ale wartosc z meotdy
+        String r1 = opt3.orElse(expensiveMethod());
+        System.out.println(r1);
+        System.out.println("---------");
+        //wykonuje sie tylko jak optional jest pusty
+        String r2 = opt3.orElseGet(() -> expensiveMethod());
+        System.out.println(r2);
+        //przykald na steramach:
+
+        Optional<Integer> number = numbers.stream()
+                .filter(n -> n % 2 == 0)
+                .findFirst();
+        //inaczej sie nie da bo findFirst zwraca Optional!
+
+        System.out.println();
+        //orElseThrow mowi nam ze jezeli nie ma wartosci to rzuc wyjatek
+        //User unser = bazaDanych.findUserByEmail(tutaj podajesz email).orElseThrow(() -> new UserNotFoundException());
+
+        //Zad1
+        System.out.println("------------------------------------");
+        List<Integer> numerki = List.of(1, 2, 3, 4, 5);
+
+//        A) Znajdź pierwszą liczbę większą niż 3
+//
+//        B) Znajdź pierwszą liczbę większą niż 100 (nie ma takiej), zwróć -1
+//
+//        C) Znajdź maksymalną wartość z listy
+
+        Optional<Integer> pierwszaWiekszaNizTrzy = numerki.stream()
+                .filter(n -> n > 3)
+                .findFirst();
+        System.out.println(pierwszaWiekszaNizTrzy);
+        int pierwszaWiekszaOdSto = numerki.stream()
+                .filter(n -> n > 100)
+                .findFirst().
+                orElse(-1);
+
+        System.out.println(pierwszaWiekszaOdSto);
+
+        Optional<Integer> maks = numerki.stream()
+                .max(Comparator.comparingInt(n -> n));
+        System.out.println(maks);
+
+
+        System.out.println("---------------------------------");
+        System.out.println("Zadanie 1");
+        // Zadanie 1
+        //
+        //  Masz metodę zwracającą nazwę użytkownika po ID. Bez Optional wygląda tak:
+        //
+        //   public String findUserName(int id) {
+        //       Map<Integer, String> users = Map.of(1, "Anna", 2, "Bartek");
+        //       return users.get(id); // może zwrócić null!
+        //   }
+        //
+        //  Zadanie:
+        //
+        //   1. Wywołaj tę metodę dla id = 99 i wypisz długość nazwy (result.length()). Co się dzieje?
+
+        //        findUserName(99).length();  nie da sie
+        int dlugosc = findUserName(99).map(d -> d.length()).orElse(0);
+        System.out.println(dlugosc);
+
+        //   2. Przepisz metodę tak, żeby zwracała Optional<String>- done
+        //   3. Użyj .isPresent() / .isEmpty() żeby bezpiecznie wypisać wynik.
+        Optional<String> wynik = findUserName(99);
+        if (wynik.isPresent()) {
+            System.out.println("Wynik: " + wynik.get());
+        } else {
+            System.out.println("Nie znaleziono user name");
+        }
+        System.out.println("------------------------------------");
+        System.out.println("Zadanie 2");
+        //  Zadanie 2
+
+        //   1. Użyj .orElse("Nieznane miasto") na obu – co wypisujesz?
+        //   2. Użyj .orElseThrow() na city – co się dzieje?
+        //   3. Użyj .orElseThrow(() -> new IllegalArgumentException("Brak miasta")) – jaka jest różnica w komunikacie błędu?
+
+        Optional<String> city = Optional.empty();
+        Optional<String> city2 = Optional.of("Kraków");
+        System.out.println(city.orElse("Nieznane miasto"));
+        System.out.println(city2.orElse("Nieznane miasto")); // w przypadku wypisanie na Optional.of nie wypisze souta
+        //  System.out.println(city.orElseThrow()); // rzuca wyjątek jeśli brak wartości
+        //   System.out.println(city.orElseThrow(()-> new IllegalArgumentException("Brak miasta"))); //
+        System.out.println("---------------------------------------");
+        System.out.println("Zadanie 3");
+        //  Zadanie 3
+
+        //
+        //   1. Stwórz Optional.of("Istniejąca") i wywołaj na nim:
+        //    - .orElse(expensiveDefault())
+        //    - .orElseGet(() -> expensiveDefault())
+        //
+        //   Który z nich wypisuje ">>> Obliczam wartość domyślną!"? Dlaczego?
+        //   2. Powtórz dla Optional.empty() – czy wynik się zmienia?
+
+        Optional<String> istniejace = Optional.of("Istniejące");
+        System.out.println(istniejace.orElse(expensiveDefault())); //expensive wyrzuca komunikat bo orElse zawsze najpierw wykonuje to co jest w metodzie
+        System.out.println(istniejace.orElseGet(() -> expensiveDefault()));  //oeElseGet przyjmuje Supplier, czyli funkcję, która ma zostać wykonana dopiero jeśli będzie potrzebna, lazy evaluation
+
+        Optional<String> istniejace2 = Optional.empty();
+        System.out.println(istniejace2.orElse(expensiveDefault()));
+        System.out.println(istniejace2.orElseGet(() -> expensiveDefault())); //tak, printuje bo Optional jest pusty
+
+        System.out.println("---------------------------------------");
+        System.out.println("Zadanie 4");
+
+        //  Zadanie 4
+        //
+        //  Masz klasy:
+        //
+        //   class Address {
+        //       private String city;
+        //       public Address(String city) { this.city = city; }
+        //       public String getCity() { return city; }
+        //   }
+        //
+        //   class User {
+        //       private String name;
+        //       private Optional<Address> address;
+        //       public User(String name, Optional<Address> address) {
+        //           this.name = name;
+        //           this.address = address;
+        //       }
+        //       public String getName() { return name; }
+        //       public Optional<Address> getAddress() { return address; }
+        //   }
+        //
+        //   List<User> users = List.of(
+        //       new User("Anna", Optional.of(new Address("Warszawa"))),
+        //       new User("Bartek", Optional.empty()),
+        //       new User("Celina", Optional.of(new Address("kraków")))
+        //   );
+        //
+        //  Zadanie:
+        //
+        //   1. Dla każdego użytkownika wypisz miasto wielkimi literami, lub "Brak adresu" jeśli nie ma.
+        //   2. Wypisz imiona tylko tych użytkowników, których miasto zaczyna się na "W
+
+        List<User> users = List.of(
+                new User("Anna", Optional.of(new Address("Warszawa"))),
+                new User("Bartek", Optional.empty()),
+                new User("Celina", Optional.of(new Address("kraków"))));
+
+        users.stream()
+                .forEach(u -> {
+                    String city4 = u.getAddress()
+                            .map(Address::getCity)
+                            .map(String::toUpperCase)
+                            .orElse("Brak adresu");
+                    System.out.println(u.getName() + ": " + city4);
+                });
+        users.stream()
+                .filter(u -> u.getAddress()
+                        .map(a -> a.getCity()
+                                .startsWith("W"))
+                        .orElse(false))
+                .forEach(u -> {
+                    u.getName();
+                    System.out.println("Użytkowicy, których miasto zaczyna się na W: " + u.getName());
+                });
+
+        System.out.println("------------------------------");
+        System.out.println("Zadanie 5");
+        //  Zadanie 5
+        //
+        //   class Product {
+        //       private String name;
+        //       private Optional<Double> discount;
+        //       public Product(String name, Optional<Double> discount) {
+        //           this.name = name;
+        //           this.discount = discount;
+        //       }
+        //       public String getName() { return name; }
+        //       public Optional<Double> getDiscount() { return discount; }
+        //   }
+        //
+        //   List<Product> products = List.of(
+        //       new Product("Laptop", Optional.of(0.15)),
+        //       new Product("Mysz", Optional.empty()),
+        //       new Product("Monitor", Optional.of(0.05)),
+        //       new Product("Klawiatura", Optional.empty()),
+        //       new Product("Słuchawki", Optional.of(0.20))
+        //   );
+        //
+        //  Zadanie:
+        //
+        //   1. Wypisz nazwy produktów ze zniżką powyżej 10%.
+        //   2. Oblicz średnią zniżkę spośród produktów, które ją mają.
+        //   3. Znajdź produkt z największą zniżką.
+        //   4. Zbuduj listę stringów w postaci "Laptop: 15% zniżki" lub "Mysz: brak zniżki" dla każdego produktu.
+        //--------------------------------------------------
+
+        List<Product> products = List.of(
+                new Product("Laptop", Optional.of(0.15)),
+                new Product("Mysz", Optional.empty()),
+                new Product("Monitor", Optional.of(0.05)),
+                new Product("Klawiatura", Optional.empty()),
+                new Product("Słuchawki", Optional.of(0.20))
+        );
+        products.stream()
+                .filter(product -> product.getDiscount()
+                        .map(p -> p > 0.10)
+                        .orElse(false))
+                .forEach(product -> {
+                    System.out.println("Produkt po zniżce 10% to: " + product.getName());
+                });
+
+        Double sredniaZnizka = products.stream()
+                .filter(p -> p.getDiscount().isPresent())
+                .mapToDouble(p -> p.getDiscount()
+                        .get()).average() // wczesniej zostalo uzyte isPresent wiec get jest bezpieczne, gdyby optional byl pusty to bylby blad
+                .orElse(0.0); // dotyczy wartosci average jesli srednia nie istnieje
+
+
+        BigDecimal zaokraglonaZnizka = new BigDecimal(sredniaZnizka);
+        System.out.println("Średnia zniżka to:  " + zaokraglonaZnizka.setScale(2, BigDecimal.ROUND_HALF_UP));
+
+        Double najwiekszaZnizka = products.stream()
+                .filter(p -> p.getDiscount().isPresent())
+                .mapToDouble(p -> p.getDiscount().get()).max().orElse(0.0);
+        System.out.println("Największa zniżka to: " + najwiekszaZnizka);
+
+        List<String> listaStringow = products.stream()
+                .map(p -> p.getName() + ": " +
+                        p.getDiscount()
+                                .map(d -> (int) (d * 100) + "% zniżki") // jeśli zniżka jest obecna, zamieniamy ją na procent, (int) jest tutaj rzutem, zeby procent byl liczba calkowita
+                                .orElse("brak zniżki"))
+                .collect(Collectors.toList());
+
+        System.out.println(listaStringow);
+
+
     }
+
+    public static String expensiveDefault() {
+        System.out.println(">>> Obliczam wartość domyślną!");
+        return "Domyślne";
+    }
+
+    public static Optional<String> findUserName(int id) {
+        Map<Integer, String> users = Map.of(1, "Anna", 2, "Bartek");
+        return Optional.ofNullable(users.get(id));
+    }
+
+    public static String expensiveMethod() {
+        System.out.println("To sie wykona zawsze, nie wazne czy optional byl pusty czy nie!");
+        return "dupa"; // to przypisze sie tylko jak optional na ktlorym wywolalismy orElse() byl pusty
+    }
+
+    public static Optional<String> findUserNameById(int id) {
+//        return Optional.empty(); //sumulujemy ze nie znalazlo
+        return Optional.of("Adix"); //symulujemy ze znalzalo
+    }
+
+
+    public static Map<String, List<String>> nazwiskaPracownikowWFirmachZSportem(List<Firma> firmy, String sport) {
+        return firmy.stream()
+                .collect(Collectors.toMap(Firma::getName, Firma -> Firma.getPracownicy().stream()
+                        .filter(pracownik -> pracownik.getFavouriteSport().equals(sport))
+                        .map(Person::getSurname)
+                        .sorted()
+                        .collect(Collectors.toList())));
+
+    }
+
+    public static Map<String, Person> najmlodszyPracownikWSporcie(List<Firma> firmy) {
+        return firmy.stream()
+                .flatMap(f -> f.getPracownicy().stream())
+                .collect(Collectors.groupingBy(p -> p.getFavouriteSport(),
+                        Collectors.collectingAndThen(Collectors.minBy(Comparator.comparing(Person::getAge)), Optional::get)));
+
+    }
+
+
+    public static List<String> wszystkieHobbyOsobPo2000(List<Firma> firmy) {
+        return firmy.stream()
+                .flatMap(f -> f.getPracownicy().stream())
+                .filter(p -> p.getYearOfBirth() > 2000)
+                .flatMap(p -> p.getHobbies().stream())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+
+    }
+
+    public static Map<String, Long> liczbaPracownikowNaSport(List<Firma> firmy) {
+        return firmy.stream()
+                .flatMap(f -> f.getPracownicy().stream())
+                .collect(Collectors.groupingBy(p -> p.getFavouriteSport(), Collectors.counting()));
+
+    }
+
     public static Map<String, List<Person>> pracownicyZHobbyWFirmach(List<Firma> firmy, String szukaneHobby) {
         return firmy.stream()
-                .filter(firma-> firma.getPracownicy().stream()
+                .filter(firma -> firma.getPracownicy().stream()
                         .anyMatch(person -> person.getHobbies().contains(szukaneHobby))) // tutaj szukamy firmy, ktore maja przynajmniej jednego pracownika z hobby, zeby nie wyjebalo exeptions
-                                                                                                //klotylda nie ma hobby wiec nie powinna sie wyswietlic
-                .collect(Collectors.toMap(firma->firma.getName(), firma->firma.getPracownicy().stream()
+                //klotylda nie ma hobby wiec nie powinna sie wyswietlic
+                .collect(Collectors.toMap(firma -> firma.getName(), firma -> firma.getPracownicy().stream()
                         .filter(person -> person.getHobbies().contains(szukaneHobby))
                         .sorted(Comparator.comparing(Person::getSurname))
                         .toList()));
 
     }
+
     public static List<String> wszystkieUnikalneHobby(List<Person> persons) {
         return persons.stream()
-                .flatMap(person-> person.getHobbies().stream())
+                .flatMap(person -> person.getHobbies().stream())
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
@@ -582,7 +979,7 @@ public class Main {
                 .filter(n -> n.getYearOfBirth() < yearOfBirth)
                 .filter(n -> n.getFavouriteSport().equals(favouriteSport))
                 .toList();
-
     }
+
 
 }
